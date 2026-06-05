@@ -23,6 +23,6 @@ logs
 .env.*
 !.env.example
 
-# Runtime data (hot-searches.json)
-data/hot-searches.json
+# Runtime data (SQLite database, hot-searches)
+data/
 .playwright-mcp
