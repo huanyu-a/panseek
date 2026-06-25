@@ -92,6 +92,11 @@ export async function fetchWithRetry<T = any>(
         throw lastError;
       }
 
+      // 4xx 客户端错误不可恢复，立即放弃不做无意义重试
+      if ((error as any)?.statusCode >= 400 && (error as any)?.statusCode < 500) {
+        throw lastError;
+      }
+
       // 如果是最后一次尝试，抛出错误
       if (attempt === maxRetries) {
         throw lastError;

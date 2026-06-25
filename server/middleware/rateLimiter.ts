@@ -45,9 +45,10 @@ function cleanup() {
 }
 
 export default defineEventHandler((event) => {
-  // 只限制 API 路由
+  // 只限制 API 路由（健康检查和认证排除限流）
   const path = event.path || "";
   if (!path.startsWith("/api/")) return;
+  if (path === "/api/health") return;
 
   cleanup();
 
