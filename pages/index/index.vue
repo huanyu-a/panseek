@@ -6,7 +6,7 @@
       <header class="hero">
         <div class="hero-accent" aria-hidden="true" />
         <div class="hero-content">
-          <div class="hero-badge">PanHub 搜索聚合引擎</div>
+          <div class="hero-badge">PanSeek 搜索聚合引擎</div>
           <h1 class="hero-title">
             <span class="hero-title-line">一键检索</span>
             <span class="hero-title-line hero-title-line--accent">全网网盘资源</span>
@@ -174,17 +174,17 @@ onMounted(async () => {
 
 // SEO 元数据
 useSeoMeta({
-  title: "PanHub - 全网最全的网盘搜索",
+  title: "PanSeek - 全网最全的网盘搜索",
   description:
     "聚合阿里云盘、夸克、百度网盘、115、迅雷等平台，实时检索各类分享链接与资源，免费、快速、无广告。",
-  ogTitle: "PanHub - 全网最全的网盘搜索",
+  ogTitle: "PanSeek - 全网最全的网盘搜索",
   ogDescription:
     "聚合阿里云盘、夸克、百度网盘、115、迅雷等平台，实时检索各类分享链接与资源，免费、快速、无广告。",
   ogType: "website",
-  ogSiteName: "PanHub",
+  ogSiteName: "PanSeek",
   ogImage: siteUrl ? `${siteUrl}/og.svg` : "/og.svg",
   twitterCard: "summary_large_image",
-  twitterTitle: "PanHub - 全网最全的网盘搜索",
+  twitterTitle: "PanSeek - 全网最全的网盘搜索",
   twitterDescription:
     "聚合阿里云盘、夸克、百度网盘、115、迅雷等平台，实时检索各类分享链接与资源，免费、快速、无广告。",
   twitterImage: siteUrl ? `${siteUrl}/og.svg` : "/og.svg",
@@ -196,7 +196,7 @@ useHead({
     {
       name: "keywords",
       content:
-        "网盘搜索, 阿里云盘搜索, 夸克网盘搜索, 百度网盘搜索, 115 网盘, 迅雷云盘, 资源搜索, 盘搜, PanHub",
+        "网盘搜索, 阿里云盘搜索, 夸克网盘搜索, 百度网盘搜索, 115 网盘, 迅雷云盘, 资源搜索, 盘搜, PanSeek",
     },
   ],
   script: [
@@ -205,7 +205,7 @@ useHead({
       innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "PanHub",
+        name: "PanSeek",
         url: siteUrl || "",
         potentialAction: {
           "@type": "SearchAction",
@@ -265,6 +265,7 @@ function getSearchOptions() {
     settings: {
       enabledPlugins: settings.value.enabledPlugins,
       enabledTgChannels: settings.value.enabledTgChannels,
+      enabledCloudTypes: settings.value.enabledCloudTypes,
       concurrency: settings.value.concurrency,
       pluginTimeoutMs: settings.value.pluginTimeoutMs,
     },

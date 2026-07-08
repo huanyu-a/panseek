@@ -21,7 +21,7 @@ function getClientAbortSignal(event: any): AbortSignal | undefined {
 }
 import { requireSearchAuth } from "../utils/requireAuth";
 import { getOrCreateSearchService } from "../core/services";
-import type { GenericResponse, SearchRequest } from "../core/types/models";
+import type { GenericResponse, SearchRequest, FilterConfig } from "../core/types/models";
 
 function parseList(val: string | undefined): string[] | undefined {
   if (!val) return undefined;
@@ -71,6 +71,20 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // 解析filter参数 (对应 pansou/api/handler.go filter参数处理)
+  let filter: FilterConfig | undefined;
+  const filterStr = (q.filter as string | undefined)?.trim();
+  if (filterStr && filterStr !== " ") {
+    try {
+      filter = JSON.parse(filterStr);
+    } catch (e: any) {
+      return sendError(
+        event,
+        createError({ statusCode: 400, statusMessage: "invalid filter json" })
+      );
+    }
+  }
+
   const req: SearchRequest = {
     kw,
     channels: parseList(q.channels as string | undefined),
@@ -84,6 +98,7 @@ export default defineEventHandler(async (event) => {
     plugins: parseList(q.plugins as string | undefined),
     cloud_types: parseList(q.cloud_types as string | undefined),
     ext,
+    filter,
   };
 
   if (req.src === "tg") req.plugins = undefined;
@@ -102,7 +117,8 @@ export default defineEventHandler(async (event) => {
     req.plugins,
     req.cloud_types,
     req.ext || {},
-    signal
+    signal,
+    req.filter
   );
 
   const resp: GenericResponse<typeof result> = {

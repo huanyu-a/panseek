@@ -3,7 +3,7 @@ import path from "node:path";
 
 export default defineConfig({
   test: {
-    name: "panhub",
+    name: "panseek",
     root: "./",
     include: ["test/unit/**/*.test.ts"],
     environment: "node",

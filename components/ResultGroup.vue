@@ -22,7 +22,7 @@
 
     <!-- 资源列表 -->
     <ul class="resource-list">
-      <li v-for="r in visibleItems" :key="r.url" class="resource-item">
+      <li v-for="r in visibleItems" :key="r.url" class="resource-item" :class="{ 'resource-item--bad': r.checkState === 'bad' }">
         <div class="resource-content">
           <a
             class="resource-link"
@@ -58,22 +58,79 @@
                 </svg>
                 提取码: {{ r.password }}
               </span>
+
+              <!-- 链接状态标签 -->
+              <span v-if="r.checkState" class="meta-tag" :class="checkStateClass(r.checkState)">
+                <svg v-if="r.checkState === 'ok'" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <svg v-else-if="r.checkState === 'bad'" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <svg v-else width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                {{ checkStateText(r.checkState) }}
+              </span>
             </div>
 
-            <button
-              class="copy-btn"
-              :class="{ 'copy-btn--copied': copiedUrl === r.url }"
-              @click.prevent="handleCopy(r.url)"
-              :title="copiedUrl === r.url ? '已复制' : '复制链接'">
-              <svg v-if="copiedUrl !== r.url" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              {{ copiedUrl === r.url ? '已复制' : '复制' }}
-            </button>
+            <div class="action-btns">
+              <!-- 检查链接按钮 -->
+              <button
+                class="action-btn check-btn"
+                :class="{ 'check-btn--checking': r.checkLoading }"
+                @click.prevent="handleCheck(r)"
+                :disabled="r.checkLoading"
+                :title="'检查链接有效性'">
+                <svg v-if="!r.checkLoading && r.checkState !== 'ok'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11l3 3L22 4"></path>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+                <svg v-if="r.checkState === 'ok'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <svg v-if="r.checkLoading" class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                </svg>
+              </button>
+
+              <!-- 复制密码按钮 -->
+              <button
+                v-if="r.password"
+                class="action-btn copy-pwd-btn"
+                :class="{ 'action-btn--copied': copiedPwd === r.url }"
+                @click.prevent="handleCopyPassword(r)"
+                :title="copiedPwd === r.url ? '已复制' : '复制密码'">
+                <svg v-if="copiedPwd !== r.url" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                {{ copiedPwd === r.url ? '已复制' : '密码' }}
+              </button>
+
+              <!-- 复制链接按钮 -->
+              <button
+                class="action-btn copy-link-btn"
+                :class="{ 'action-btn--copied': copiedUrl === r.url }"
+                @click.prevent="handleCopy(r.url)"
+                :title="copiedUrl === r.url ? '已复制' : '复制链接'">
+                <svg v-if="copiedUrl !== r.url" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                {{ copiedUrl === r.url ? '已复制' : '链接' }}
+              </button>
+            </div>
           </div>
         </div>
       </li>
@@ -104,13 +161,75 @@ const props = defineProps<{
 const emit = defineEmits(["toggle", "copy"]);
 
 const copiedUrl = ref("");
-let copyTimer: ReturnType<typeof setTimeout> | null = null;
+const copiedPwd = ref("");
+let copyUrlTimer: ReturnType<typeof setTimeout> | null = null;
+let copyPwdTimer: ReturnType<typeof setTimeout> | null = null;
+
+const config = useRuntimeConfig();
+const apiBase = (config.public?.apiBase as string) || "/api";
 
 function handleCopy(url: string) {
   emit("copy", url);
   copiedUrl.value = url;
-  if (copyTimer) clearTimeout(copyTimer);
-  copyTimer = setTimeout(() => { copiedUrl.value = ""; }, 1500);
+  if (copyUrlTimer) clearTimeout(copyUrlTimer);
+  copyUrlTimer = setTimeout(() => { copiedUrl.value = ""; }, 1500);
+}
+
+async function handleCopyPassword(r: any) {
+  if (!r.password) return;
+  try {
+    await navigator.clipboard.writeText(r.password);
+  } catch {}
+  copiedPwd.value = r.url;
+  if (copyPwdTimer) clearTimeout(copyPwdTimer);
+  copyPwdTimer = setTimeout(() => { copiedPwd.value = ""; }, 1500);
+}
+
+/** 检查链接有效性 */
+async function handleCheck(r: any) {
+  if (r.checkLoading || r.checkState) return;
+  r.checkLoading = true;
+  try {
+    const resp = await $fetch<any>(`${apiBase}/check/links`, {
+      method: "POST",
+      body: {
+        items: [{
+          disk_type: r.type || "",
+          url: r.url,
+          password: r.password || "",
+        }],
+      },
+    });
+    const result = resp?.data?.results?.[0] || resp?.results?.[0];
+    if (result) {
+      r.checkState = result.state;
+      r.checkSummary = result.summary || "";
+    } else {
+      r.checkState = "uncertain";
+    }
+  } catch {
+    r.checkState = "uncertain";
+  } finally {
+    r.checkLoading = false;
+  }
+}
+
+function checkStateClass(state: string): string {
+  switch (state) {
+    case "ok": return "check-ok";
+    case "bad": return "check-bad";
+    case "locked": return "check-locked";
+    default: return "check-uncertain";
+  }
+}
+
+function checkStateText(state: string): string {
+  switch (state) {
+    case "ok": return "有效";
+    case "bad": return "失效";
+    case "locked": return "需要密码";
+    default: return "未知";
+  }
 }
 
 const visibleItems = computed(() =>
@@ -289,6 +408,15 @@ function formatDate(d?: string) {
   background: var(--bg-hover);
 }
 
+/* 失效链接样式 */
+.resource-item--bad {
+  opacity: 0.55;
+}
+
+.resource-item--bad .resource-link {
+  text-decoration: line-through;
+}
+
 .resource-content {
   display: flex;
   flex-direction: column;
@@ -383,8 +511,41 @@ function formatDate(d?: string) {
   color: var(--success);
 }
 
-/* 复制按钮 */
-.copy-btn {
+/* 检查状态标签 */
+.meta-tag.check-ok {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: var(--success);
+}
+
+.meta-tag.check-bad {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+.meta-tag.check-locked {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #f59e0b;
+}
+
+.meta-tag.check-uncertain {
+  background: rgba(107, 114, 128, 0.12);
+  border-color: rgba(107, 114, 128, 0.25);
+  color: var(--text-tertiary);
+}
+
+/* 操作按钮组 */
+.action-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* 通用操作按钮样式 */
+.action-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -401,25 +562,50 @@ function formatDate(d?: string) {
   white-space: nowrap;
 }
 
-.copy-btn:hover {
+.action-btn:hover {
   background: var(--bg-secondary);
   border-color: var(--border-medium);
   color: var(--text-primary);
   transform: translateY(-1px);
 }
 
-.copy-btn:active {
+.action-btn:active {
   transform: translateY(0);
   background: var(--border-light);
 }
 
-.copy-btn svg {
+.action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-btn svg {
   stroke: currentColor;
 }
 
-.copy-btn--copied {
+.action-btn--copied {
   color: var(--success);
   border-color: var(--success);
+}
+
+/* 检查按钮特殊样式 */
+.check-btn {
+  padding: 6px 8px;
+}
+
+.check-btn--checking {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* 旋转动画 */
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* 卡片底部 */
@@ -490,9 +676,13 @@ function formatDate(d?: string) {
     font-size: 10px;
   }
 
-  .copy-btn {
+  .action-btn {
     padding: 5px 8px;
     font-size: 11px;
+  }
+
+  .check-btn {
+    padding: 5px 6px;
   }
 
   .expand-btn {
@@ -520,7 +710,7 @@ function formatDate(d?: string) {
     border-width: 2px;
   }
 
-  .copy-btn,
+  .action-btn,
   .expand-btn,
   .load-more-btn {
     border-width: 2px;
@@ -533,7 +723,7 @@ function formatDate(d?: string) {
   .resource-item,
   .resource-link,
   .expand-btn,
-  .copy-btn,
+  .action-btn,
   .load-more-btn {
     transition: none;
   }
@@ -541,13 +731,17 @@ function formatDate(d?: string) {
   .result-card:hover,
   .resource-link:hover,
   .expand-btn:hover,
-  .copy-btn:hover,
+  .action-btn:hover,
   .load-more-btn:hover {
     transform: none;
   }
 
   .external-icon {
     transition: none;
+  }
+
+  .spin {
+    animation: none;
   }
 }
 </style>

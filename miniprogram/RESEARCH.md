@@ -1,6 +1,6 @@
-# PanHub Mini Program Research
+# PanSeek Mini Program Research
 
-> 本文档记录将 PanHub 的 Web 前端重写为微信小程序的所有前端决策、框架选型结论和后续步骤。
+> 本文档记录将 PanSeek 的 Web 前端重写为微信小程序的所有前端决策、框架选型结论和后续步骤。
 
 ---
 
@@ -89,7 +89,7 @@ MP 端把 token 存 `wx.setStorageSync`，后续每个请求带 Authorization he
 决策理由：
 1. **一整套**：`tdesign-vue-next` (Web Vue) / `tdesign-react` (Web React) / `tdesign-miniprogram` (MP) 同 Design Token
 2. 未来 Web 端若想从 Vue 切 React，UI 设计系统不需要重做
-3. 视觉风格默认更贴近 PanHub 现有"极简克制"观感
+3. 视觉风格默认更贴近 PanSeek 现有"极简克制"观感
 4. 腾讯自家，MP 兼容性/修复优先级最高
 5. 支持 TypeScript 定义
 
@@ -119,7 +119,7 @@ MP 端把 token 存 `wx.setStorageSync`，后续每个请求带 Authorization he
 
 ---
 
-## 6. 组件需求清单（PanHub 所需）
+## 6. 组件需求清单（PanSeek 所需）
 
 | 功能点 | TDesign 组件 | Vant 对照 | 备注 |
 |--------|-------------|-----------|------|
@@ -217,7 +217,7 @@ project/
 | 问题 | 选项 | 倾向 |
 |------|------|------|
 | 公共代码抽离时机 | 现在 vs 做到再抽 | **现在**抽 merge + extract，其余按需 |
-| UI 主题色 | 保留 PanHub 蓝 vs 用 TDesign 默认 | 保留 PanHub 蓝，override CSS 变量 |
+| UI 主题色 | 保留 PanSeek 蓝 vs 用 TDesign 默认 | 保留 PanSeek 蓝，override CSS 变量 |
 | 搜索历史存储位置 | 后端 vs `wx.setStorageSync` | 两者都保留（后端持久 + 本地极速） |
 | 设置是否同步后端 | 是 vs 否 | **否**，MP 端仅本地存储 |
 

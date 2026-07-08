@@ -25,6 +25,8 @@ export interface FetchWithRetryOptions {
   logWarnings?: boolean;
   /** 取消信号，客户端断开时中止请求和重试 */
   signal?: AbortSignal;
+  /** 响应类型，默认 'json'。设为 'text' 可获取 HTML 文本 */
+  responseType?: 'json' | 'text' | 'blob' | 'arrayBuffer' | 'stream';
 }
 
 /**
@@ -62,16 +64,24 @@ export async function fetchWithRetry<T = any>(
     timeout = 8000,
     logWarnings = true,
     signal,
+    responseType,
   } = retryOptions;
 
-  const fetcher: $Fetch = ofetch.create({
+  const fetcherOptions: Record<string, any> = {
     timeout,
     headers: {
       "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      ...options.headers,
+      ...(options as any).headers,
     },
-    ...options,
-  });
+    ...(options as any),
+  };
+
+  // 显式设置 responseType，避免 ofetch 默认将 HTML 当 JSON 解析
+  if (responseType) {
+    fetcherOptions.responseType = responseType;
+  }
+
+  const fetcher: $Fetch = ofetch.create(fetcherOptions);
 
   let lastError: Error | null = null;
 

@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         PanHub 链接检测助手
-// @name:zh      PanHub 链接检测助手
-// @name:en      PanHub Link Checker
+// @name         PanSeek 链接检测助手
+// @name:zh      PanSeek 链接检测助手
+// @name:en      PanSeek Link Checker
 // @namespace    https://panhub.shenzjd.com
 // @version      2.0.0
-// @description  自动检测 PanHub 搜索结果中的失效网盘链接，标记已过期/已删除的资源，避免浪费时间点击
-// @description:en  Detect expired cloud storage links in PanHub search results and mark them with a strikethrough
+// @description  自动检测 PanSeek 搜索结果中的失效网盘链接，标记已过期/已删除的资源，避免浪费时间点击
+// @description:en  Detect expired cloud storage links in PanSeek search results and mark them with a strikethrough
 // @author       shenzjd
 // @match        https://panhub.shenzjd.com/*
 // @match        http://panhub.shenzjd.com/*
@@ -36,8 +36,8 @@
 // @compatible   edge Tampermonkey / Violentmonkey
 // @run-at       document-idle
 // @icon         https://panhub.shenzjd.com/favicon.ico
-// @downloadURL  https://panhub.shenzjd.com/panhub-link-checker.user.js
-// @updateURL    https://panhub.shenzjd.com/panhub-link-checker.user.js
+// @downloadURL  https://panhub.shenzjd.com/panseek-link-checker.user.js
+// @updateURL    https://panhub.shenzjd.com/panseek-link-checker.user.js
 // ==/UserScript==
 
 (function () {
@@ -486,11 +486,11 @@
     });
   }
 
-  // 暴露给 PanHub 页面（供未来集成使用）
+  // 暴露给 PanSeek 页面（供未来集成使用）
   if (typeof unsafeWindow !== "undefined") {
-    unsafeWindow.__panhub_linkCheckerReady = true;
-    unsafeWindow.__panhub_linkCheckerVersion = "2.0.0";
-    unsafeWindow.__panhub_checkLink = async function (url) {
+    unsafeWindow.__panseek_linkCheckerReady = true;
+    unsafeWindow.__panseek_linkCheckerVersion = "2.0.0";
+    unsafeWindow.__panseek_checkLink = async function (url) {
       const checker = PLATFORM_CHECKERS.find((c) => c.match(url));
       if (!checker) return { state: 0, platform: "unknown" };
       const shareId = checker.extractId(url);
@@ -500,5 +500,5 @@
     };
   }
 
-  console.log("[PanHub Link Checker] ✅ 链接检测助手 v2.0.0 已加载（API 模式）");
+  console.log("[PanSeek Link Checker] ✅ 链接检测助手 v2.0.0 已加载（API 模式）");
 })();

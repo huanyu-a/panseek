@@ -1,5 +1,5 @@
 import type { MergedLinks, GenericResponse, SearchResponse } from "~/types/search";
-import { ALL_PLUGIN_NAMES } from "~/config/plugins";
+import { ALL_PLUGIN_NAMES, SETTINGS_VERSION, STORAGE_KEYS } from "~/config/plugins";
 import { extractMergedFromResponse } from "~/utils/extractMergedFromResponse";
 import { mergeMergedByType } from "~/utils/mergeMergedByType";
 
@@ -19,6 +19,7 @@ export interface SearchOptions {
   settings: {
     enabledPlugins: string[];
     enabledTgChannels: string[];
+    enabledCloudTypes: string[];
     concurrency: number;
     pluginTimeoutMs: number;
   };
@@ -124,7 +125,7 @@ export function useSearch() {
     keyword: string,
     conc: number,
     pluginTimeoutMs: number,
-    params: { src: "plugin" | "tg"; plugins?: string; channels?: string },
+    params: { src: "plugin" | "tg"; plugins?: string; channels?: string; cloudTypes?: string },
     label: string,
     shouldSkip: () => boolean,
     onAuthRequired?: () => void
@@ -144,6 +145,7 @@ export function useSearch() {
         });
         if (params.plugins) q.set("plugins", params.plugins);
         if (params.channels) q.set("channels", params.channels);
+        if (params.cloudTypes) q.set("cloud_types", params.cloudTypes);
         const response = await $fetch<GenericResponse<SearchResponse>>(
           `${apiBase}/search?${q.toString()}`,
           { signal: ac.signal, credentials: "include" } as any
@@ -189,16 +191,21 @@ export function useSearch() {
     const shouldSkip = () => mySeq !== searchSeq || state.value.paused;
     const onAuth = options.onAuthRequired;
 
-    // 为每个插件创建独立的搜索任务
-    for (const plugin of enabledPlugins) {
+    // 插件搜索：合并为单个 API 调用（后端内部并发处理）
+    // 当所有插件都启用时，后端会自动搜索全部插件
+    const cloudTypesParam = settings.enabledCloudTypes && settings.enabledCloudTypes.length > 0
+      ? settings.enabledCloudTypes.join(",")
+      : undefined;
+    if (enabledPlugins.length > 0) {
+      const pluginsParam = enabledPlugins.join(",");
       searchTasks.push(
         createSearchTask(
           apiBase,
           keyword,
           conc,
           settings.pluginTimeoutMs,
-          { src: "plugin", plugins: plugin },
-          `Plugin ${plugin}`,
+          { src: "plugin", plugins: pluginsParam, cloudTypes: cloudTypesParam },
+          `Plugins batch (${enabledPlugins.length})`,
           shouldSkip,
           onAuth
         )
@@ -215,7 +222,7 @@ export function useSearch() {
           keyword,
           conc,
           settings.pluginTimeoutMs,
-          { src: "tg", channels: batch.join(",") },
+          { src: "tg", channels: batch.join(","), cloudTypes: cloudTypesParam },
           `TG batch ${Math.floor(i / tgBatchSize)}`,
           shouldSkip,
           onAuth
@@ -290,6 +297,21 @@ export function useSearch() {
     const enabledPlugins = settings.enabledPlugins.filter((n) =>
       ALL_PLUGIN_NAMES.includes(n as any)
     );
+
+    // 自动迁移：如果设置版本过期，补充新增插件到用户设置
+    if (typeof window !== "undefined") {
+      const savedVersion = localStorage.getItem(STORAGE_KEYS.settingsVersion);
+      const currentVersion = String(SETTINGS_VERSION);
+      if (savedVersion !== currentVersion) {
+        const newPlugins = ALL_PLUGIN_NAMES.filter(
+          (n) => !enabledPlugins.includes(n)
+        );
+        if (newPlugins.length > 0) {
+          settings.enabledPlugins = [...enabledPlugins, ...newPlugins];
+          localStorage.setItem(STORAGE_KEYS.settingsVersion, currentVersion);
+        }
+      }
+    }
 
     if (
       (settings.enabledTgChannels?.length || 0) === 0 &&

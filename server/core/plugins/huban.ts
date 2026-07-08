@@ -149,4 +149,3 @@ export class HubanPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new HubanPlugin());

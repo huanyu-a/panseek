@@ -10,7 +10,7 @@ export function useDarkMode() {
   function toggle() {
     isDark.value = !isDark.value;
     try {
-      localStorage.setItem("panhub:dark-mode", isDark.value ? "dark" : "light");
+      localStorage.setItem("panseek:dark-mode", isDark.value ? "dark" : "light");
     } catch {
       // Safari 隐私模式 / 存储满时 localStorage 会抛错，降级为仅内存状态
     }
@@ -20,7 +20,15 @@ export function useDarkMode() {
   function init() {
     if (!import.meta.client) return;
     try {
-      const saved = localStorage.getItem("panhub:dark-mode");
+      // 迁移旧存储键（panhub → panseek）
+      let saved = localStorage.getItem("panseek:dark-mode");
+      if (saved === null) {
+        saved = localStorage.getItem("panhub:dark-mode");
+        if (saved !== null) {
+          localStorage.setItem("panseek:dark-mode", saved);
+          localStorage.removeItem("panhub:dark-mode");
+        }
+      }
       if (saved === "dark") {
         isDark.value = true;
       } else if (saved === "light") {

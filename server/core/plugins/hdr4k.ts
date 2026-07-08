@@ -143,4 +143,3 @@ export class Hdr4kPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new Hdr4kPlugin());

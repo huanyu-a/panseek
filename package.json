@@ -1,21 +1,21 @@
 {
-  "name": "panhub.shenzjd.com",
+  "name": "panseek",
   "version": "1.0.0",
-  "description": "PanHub · 全网最全的网盘搜索工具",
+  "description": "PanSeek · 全网最全的网盘搜索工具",
   "type": "module",
   "private": true,
   "author": {
     "name": "shenzjd",
-    "url": "https://github.com/wu529778790/panhub.shenzjd.com"
+    "url": "https://github.com/huanyu-a/panseek"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wu529778790/panhub.shenzjd.com.git"
+    "url": "git+https://github.com/huanyu-a/panseek.git"
   },
   "bugs": {
-    "url": "https://github.com/wu529778790/panhub.shenzjd.com/issues"
+    "url": "https://github.com/huanyu-a/panseek/issues"
   },
-  "homepage": "https://github.com/wu529778790/panhub.shenzjd.com#readme",
+  "homepage": "https://github.com/huanyu-a/panseek#readme",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -46,7 +46,7 @@
   },
   "license": "MIT",
   "keywords": [
-    "panhub",
+    "panseek",
     "网盘搜索",
     "阿里云盘",
     "夸克",

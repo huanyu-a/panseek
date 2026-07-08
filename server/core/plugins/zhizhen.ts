@@ -194,4 +194,3 @@ function parseLinks(
 }
 
 // 注册
-registerGlobalPlugin(new ZhizhenPlugin());

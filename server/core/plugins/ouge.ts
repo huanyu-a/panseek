@@ -13,6 +13,7 @@ type ApiItem = {
   vod_pubdate?: string;
   vod_area?: string;
   vod_year?: string;
+  vod_pic?: string;
 };
 
 type ApiResponse = { code: number; msg: string; list: ApiItem[] };
@@ -22,34 +23,20 @@ const PWD_RE = /\?pwd=([0-9a-zA-Z]+)/;
 function mapCloudType(apiType: string, url: string): string {
   const upper = (apiType || "").toUpperCase();
   switch (upper) {
-    case "BD":
-      return "baidu";
-    case "KG":
-      return "quark";
-    case "UC":
-      return "uc";
-    case "ALY":
-      return "aliyun";
-    case "XL":
-      return "xunlei";
-    case "TY":
-      return "tianyi";
-    case "115":
-      return "115";
-    case "MB":
-      return "mobile";
-    case "WY":
-      return "weiyun";
-    case "LZ":
-      return "lanzou";
-    case "JGY":
-      return "jianguoyun";
-    case "123":
-      return "123";
-    case "PK":
-      return "pikpak";
-    default:
-      return determineLinkType(url);
+    case "BD": return "baidu";
+    case "KG": return "quark";
+    case "UC": return "uc";
+    case "ALY": return "aliyun";
+    case "XL": return "xunlei";
+    case "TY": return "tianyi";
+    case "115": return "115";
+    case "MB": return "mobile";
+    case "WY": return "weiyun";
+    case "LZ": return "lanzou";
+    case "JGY": return "jianguoyun";
+    case "123": return "123";
+    case "PK": return "pikpak";
+    default: return determineLinkType(url);
   }
 }
 
@@ -58,8 +45,7 @@ function determineLinkType(url: string): string {
   if (u.includes("pan.quark.cn/s/")) return "quark";
   if (u.includes("drive.uc.cn/s/")) return "uc";
   if (u.includes("pan.baidu.com/s/")) return "baidu";
-  if (u.includes("aliyundrive.com/s/") || u.includes("alipan.com/s/"))
-    return "aliyun";
+  if (u.includes("aliyundrive.com/s/") || u.includes("alipan.com/s/")) return "aliyun";
   if (u.includes("pan.xunlei.com/s/")) return "xunlei";
   if (u.includes("cloud.189.cn/t/")) return "tianyi";
   if (u.includes("115.com/s/")) return "115";
@@ -67,7 +53,7 @@ function determineLinkType(url: string): string {
   if (u.includes("share.weiyun.com")) return "weiyun";
   if (u.includes("lanzou") || u.includes("lanzo")) return "lanzou";
   if (u.includes("jianguoyun.com/p/")) return "jianguoyun";
-  if (u.includes("123pan.com/s/")) return "123";
+  if (u.includes("123pan.com/s/") || u.includes("123912.com/s/") || u.includes("123684.com/s/") || u.includes("123865.com/s/")) return "123";
   if (u.includes("mypikpak.com/s/")) return "pikpak";
   if (u.startsWith("magnet:")) return "magnet";
   if (u.startsWith("ed2k://")) return "ed2k";
@@ -92,11 +78,7 @@ function parseLinks(fromStr: string, urlStr: string) {
   return links;
 }
 
-const OUGE_BASES = [
-  "https://woog.nxog.eu.org",
-  "https://ouge.nxog.eu.org",
-  "https://api.nxog.eu.org",
-];
+const OUGE_BASE = "https://woog.nxog.eu.org";
 
 export class OugePlugin extends BaseAsyncPlugin {
   constructor() {
@@ -106,63 +88,55 @@ export class OugePlugin extends BaseAsyncPlugin {
     keyword: string,
     ext?: Record<string, any>
   ): Promise<SearchResult[]> {
+    const signal = ext?.signal as AbortSignal | undefined;
     const timeout = Math.max(
       3000,
-      Number((ext as any)?.__plugin_timeout_ms) || 8000
+      Number((ext as any)?.__plugin_timeout_ms) || 6000
     );
-    const queries = [(keyword || "").trim()].filter(Boolean);
-    if (queries[0]?.length <= 1) queries.push("电影", "movie", "1080p");
+    const kw = (keyword || "").trim();
+    if (!kw) return [];
 
-    for (const kw of queries) {
-      const tasks = OUGE_BASES.map((base) =>
-        ofetch<ApiResponse>(
-          `${base}/api.php/provide/vod?ac=detail&wd=${encodeURIComponent(
-            kw
-          )}` as string,
-          {
-            headers: {
-              "user-agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
-              accept: "application/json, text/plain, */*",
-              referer: `${base}/`,
-            },
-            timeout,
-          }
-        ).catch(() => ({ code: -1, msg: "error", list: [] }))
-      );
-      const resps = await Promise.all(tasks);
-      const list: ApiItem[] = [];
-      for (const r of resps)
-        if (r && r.code === 1 && Array.isArray(r.list)) list.push(...r.list);
-      if (!list.length) continue;
-      const out: SearchResult[] = [];
-      for (const item of list) {
-        const links = parseLinks(
-          item.vod_down_from || "",
-          item.vod_down_url || ""
-        );
-        if (!links.length) continue;
-        out.push({
-          message_id: "",
-          unique_id: `ouge-${item.vod_id}`,
-          channel: "",
-          datetime: new Date().toISOString(),
-          title: (item.vod_name || "").trim(),
-          content: [
-            item.vod_actor && `主演: ${item.vod_actor}`,
-            item.vod_director && `导演: ${item.vod_director}`,
-            item.vod_area && `地区: ${item.vod_area}`,
-            item.vod_year && `年份: ${item.vod_year}`,
-          ]
-            .filter(Boolean)
-            .join(" | "),
-          links,
-          tags: [item.vod_year || "", item.vod_area || ""].filter(Boolean),
-        });
+    const r = await ofetch<ApiResponse>(
+      `${OUGE_BASE}/api.php/provide/vod?ac=detail&wd=${encodeURIComponent(kw)}`,
+      {
+        headers: {
+          "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+          accept: "application/json, text/plain, */*",
+          "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+          referer: `${OUGE_BASE}/`,
+        },
+        timeout,
+        retry: 1,
+        signal,
       }
-      if (out.length) return out;
+    ).catch(() => ({ code: -1, msg: "error", list: [] } as ApiResponse));
+
+    const list: ApiItem[] = [];
+    if (r && r.code === 1 && Array.isArray(r.list)) list.push(...r.list);
+    if (!list.length) return [];
+
+    const out: SearchResult[] = [];
+    for (const item of list) {
+      const links = parseLinks(item.vod_down_from || "", item.vod_down_url || "");
+      if (!links.length) continue;
+      out.push({
+        message_id: "",
+        unique_id: `ouge-${item.vod_id}`,
+        channel: "",
+        datetime: new Date().toISOString(),
+        title: (item.vod_name || "").trim(),
+        content: [
+          item.vod_actor && `主演: ${item.vod_actor}`,
+          item.vod_director && `导演: ${item.vod_director}`,
+          item.vod_area && `地区: ${item.vod_area}`,
+          item.vod_year && `年份: ${item.vod_year}`,
+          item.vod_remarks && `状态: ${item.vod_remarks}`,
+        ].filter(Boolean).join(" | "),
+        links,
+        tags: [item.vod_year || "", item.vod_area || ""].filter(Boolean),
+      });
     }
-    return [];
+    return out;
   }
 }
 

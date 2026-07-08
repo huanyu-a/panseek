@@ -114,4 +114,3 @@ export class X1337xPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new X1337xPlugin());

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PanHub is a Nuxt 4 web application that aggregates search results from Telegram channels and external plugin sites to find cloud storage resources (Aliyun, Quark, Baidu, 115, Xunlei, etc.). It supports priority-based batch processing, unified LRU caching with namespaces, SQLite hot search persistence (with memory fallback), and deploys to Cloudflare Workers (default), Vercel, or Docker.
+PanSeek is a Nuxt 4 web application that aggregates search results from Telegram channels and external plugin sites to find cloud storage resources (Aliyun, Quark, Baidu, 115, Xunlei, etc.). It supports priority-based batch processing, unified LRU caching with namespaces, SQLite hot search persistence (with memory fallback), and deploys to Cloudflare Workers (default), Vercel, or Docker.
 
 ## Package Manager
 

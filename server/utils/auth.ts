@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import type { H3Event } from "h3";
 import { getCookie, setHeader } from "h3";
 
-const COOKIE_NAME = "panhub_unlock";
+const COOKIE_NAME = "panseek_unlock";
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 天
 const COOKIE_PATH = "/";
 

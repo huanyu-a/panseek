@@ -159,4 +159,3 @@ export class Fox4kPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new Fox4kPlugin());

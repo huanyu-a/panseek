@@ -3,7 +3,7 @@ import type { SearchResult } from "../types/models";
 import { ofetch } from "ofetch";
 import { load } from "cheerio";
 
-const BASE = "https://123.666291.xyz";
+const BASE = "https://666.666291.xyz";
 const SEARCH = (kw: string) =>
   `${BASE}/index.php/vod/search/wd/${encodeURIComponent(kw)}.html`;
 
@@ -122,4 +122,3 @@ export class MuouPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new MuouPlugin());

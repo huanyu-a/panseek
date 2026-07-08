@@ -93,4 +93,3 @@ export class Pan666Plugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new Pan666Plugin());

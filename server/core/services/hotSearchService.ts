@@ -99,7 +99,7 @@ export class HotSearchService {
   }
 }
 
-const HOT_SEARCH_SERVICE_KEY = "__panhub_hot_search_service_v3__";
+const HOT_SEARCH_SERVICE_KEY = "__panseek_hot_search_service_v3__";
 
 export function getOrCreateHotSearchService(): HotSearchService {
   const context = (globalThis as any)[HOT_SEARCH_SERVICE_KEY];

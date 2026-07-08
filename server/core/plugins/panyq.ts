@@ -128,4 +128,3 @@ function extractPwd(url: string): string {
   return "";
 }
 
-registerGlobalPlugin(new PanyqPlugin());

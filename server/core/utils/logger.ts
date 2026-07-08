@@ -40,7 +40,7 @@ export class Logger {
     const rawLevel = options.level || process.env.LOG_LEVEL || "info";
     const validLevels: string[] = ["debug", "info", "warn", "error"];
     this.level = (validLevels.includes(rawLevel) ? rawLevel : "info") as LogLevel;
-    this.service = options.service || "panhub";
+    this.service = options.service || "panseek";
     this.enableColors = options.enableColors ?? process.env.NODE_ENV !== "production";
   }
 

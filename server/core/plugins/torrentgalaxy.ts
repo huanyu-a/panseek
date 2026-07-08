@@ -110,4 +110,3 @@ export class TorrentGalaxyPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new TorrentGalaxyPlugin());

@@ -203,4 +203,3 @@ function formatBytes(bytes: number): string {
   return `${n.toFixed(1)} ${units[i]}`;
 }
 
-registerGlobalPlugin(new SolidTorrentsPlugin());

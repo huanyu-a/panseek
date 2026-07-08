@@ -48,6 +48,13 @@
           <button
             type="button"
             class="nav-link"
+            :class="{ active: activeSection === 'cloud' }"
+            @click="onNavClick('settings-cloud', 'cloud')">
+            网盘类型
+          </button>
+          <button
+            type="button"
+            class="nav-link"
             :class="{ active: activeSection === 'performance' }"
             @click="onNavClick('settings-performance', 'performance')">
             性能并发
@@ -91,6 +98,27 @@
                   v-model="inner.enabledTgChannels"
                   @change="saveTemp" />
                 <span>{{ name }}</span>
+              </label>
+            </div>
+          </section>
+
+          <section id="settings-cloud" class="drawer__section">
+            <div class="section__title">
+              <strong>网盘类型</strong>
+              <div class="section__tools">
+                <button class="btn" type="button" @click="onSelectAllCloud">全选</button>
+                <button class="btn" type="button" @click="onClearAllCloud">全不选</button>
+              </div>
+            </div>
+            <p class="cloud-hint">勾选后搜索结果仅返回选中的网盘类型</p>
+            <div class="plugin-grid">
+              <label v-for="ct in allCloudTypes" :key="ct" class="plugin-item">
+                <input
+                  type="checkbox"
+                  :value="ct"
+                  v-model="inner.enabledCloudTypes"
+                  @change="saveTemp" />
+                <span>{{ cloudTypeName(ct) }}</span>
               </label>
             </div>
           </section>
@@ -144,6 +172,7 @@ import { onMounted, onBeforeUnmount } from "vue";
 interface UserSettings {
   enabledTgChannels: string[];
   enabledPlugins: string[];
+  enabledCloudTypes: string[];
   concurrency: number;
   pluginTimeoutMs: number;
 }
@@ -152,6 +181,7 @@ const props = defineProps<{
   open: boolean;
   allPlugins: string[];
   allTgChannels: string[];
+  allCloudTypes: string[];
 }>();
 const emit = defineEmits([
   "update:modelValue",
@@ -163,6 +193,7 @@ const emit = defineEmits([
 const inner = ref<UserSettings>({
   enabledTgChannels: [],
   enabledPlugins: [],
+  enabledCloudTypes: [],
   concurrency: 4,
   pluginTimeoutMs: 5000,
 });
@@ -170,7 +201,26 @@ const inner = ref<UserSettings>({
 const DEFAULT_CONCURRENCY = 4;
 const DEFAULT_PLUGIN_TIMEOUT = 5000;
 const drawerMainRef = ref<HTMLElement | null>(null);
-const activeSection = ref<"plugins" | "channels" | "performance">("plugins");
+const activeSection = ref<"plugins" | "channels" | "cloud" | "performance">("plugins");
+
+const CLOUD_TYPE_NAMES: Record<string, string> = {
+  baidu: "百度网盘",
+  aliyun: "阿里云盘",
+  quark: "夸克网盘",
+  uc: "UC网盘",
+  tianyi: "天翼云盘",
+  "115": "115网盘",
+  xunlei: "迅雷云盘",
+  mobile: "移动云盘",
+  pikpak: "PikPak",
+  "123": "123网盘",
+  guangya: "光鸭云盘",
+  magnet: "磁力链接",
+  ed2k: "电驴链接",
+};
+function cloudTypeName(ct: string): string {
+  return CLOUD_TYPE_NAMES[ct] || ct;
+}
 
 watch(
   () => props.modelValue,
@@ -218,10 +268,18 @@ function onClearAllTg() {
   inner.value.enabledTgChannels = [];
   saveTemp();
 }
+function onSelectAllCloud() {
+  inner.value.enabledCloudTypes = [...props.allCloudTypes];
+  saveTemp();
+}
+function onClearAllCloud() {
+  inner.value.enabledCloudTypes = [];
+  saveTemp();
+}
 
 function onNavClick(
-  id: "settings-plugins" | "settings-channels" | "settings-performance",
-  key: "plugins" | "channels" | "performance"
+  id: "settings-plugins" | "settings-channels" | "settings-cloud" | "settings-performance",
+  key: "plugins" | "channels" | "cloud" | "performance"
 ) {
   activeSection.value = key;
   const root = drawerMainRef.value;
@@ -236,6 +294,7 @@ function setActiveSectionByScroll() {
   const ids = [
     { id: "settings-plugins", key: "plugins" as const },
     { id: "settings-channels", key: "channels" as const },
+    { id: "settings-cloud", key: "cloud" as const },
     { id: "settings-performance", key: "performance" as const },
   ];
   const threshold = root.scrollTop + 24;
@@ -444,6 +503,12 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   font-size: 12px;
   color: var(--text-secondary);
+}
+
+.cloud-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin: 0 0 8px;
 }
 
 .field {

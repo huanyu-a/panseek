@@ -97,4 +97,3 @@ export class ShandianPlugin extends BaseAsyncPlugin {
   }
 }
 
-registerGlobalPlugin(new ShandianPlugin());

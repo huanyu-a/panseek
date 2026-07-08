@@ -2,6 +2,8 @@ export interface Link {
   type: string;
   url: string;
   password: string;
+  work_title?: string; // 对应 pansou model.Link.WorkTitle
+  datetime?: string; // 对应 pansou model.Link.Datetime (ISO string)
 }
 
 export interface SearchResult {
@@ -39,6 +41,12 @@ export interface GenericResponse<T> {
   data?: T;
 }
 
+/** 过滤配置，直接翻译自 pansou/model/request.go FilterConfig */
+export interface FilterConfig {
+  include?: string[]; // 包含关键词列表（OR关系）
+  exclude?: string[]; // 排除关键词列表（AND关系）
+}
+
 export interface SearchRequest {
   kw: string;
   channels?: string[];
@@ -49,4 +57,5 @@ export interface SearchRequest {
   plugins?: string[];
   ext?: Record<string, any>;
   cloud_types?: string[];
+  filter?: FilterConfig; // 过滤配置，用于过滤返回结果
 }
