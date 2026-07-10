@@ -39,10 +39,10 @@ jobs:
           # 百度统计 ID（运行时注入，不在代码中硬编码）
           NUXT_PUBLIC_BAIDU_TONGJI_ID: ${{ secrets.NUXT_PUBLIC_BAIDU_TONGJI_ID }}
 
+      - name: Install Wrangler
+        run: npm install wrangler@4.110.0 --no-save --no-audit --no-fund
+
       - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          # wrangler.toml 已包含 account_id、routes、workers_dev、assets
-          # 无需额外 command，默认执行 wrangler deploy
-          wranglerVersion: "4.110.0"
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
