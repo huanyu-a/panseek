@@ -97,25 +97,6 @@
       </nav>
     </header>
 
-    <!-- 链接检测助手安装/升级提示条（全宽细条，导航栏下方） -->
-    <div v-if="showCheckerTip" class="checker-bar">
-      <span class="checker-bar__text">
-        <template v-if="checkerTipType === 'upgrade'">
-          🔔 <a href="/panseek-link-checker.user.js" class="checker-bar__link">链接检测助手</a>
-          有新版本（v{{ LATEST_CHECKER_VERSION }}），点击安装更新
-          <span class="checker-bar__sep">·</span>
-          <span class="checker-bar__ver">当前 v{{ installedCheckerVersion }}</span>
-        </template>
-        <template v-else>
-          💡 安装 <a href="/panseek-link-checker.user.js" class="checker-bar__link">链接检测助手</a>
-          油猴脚本，自动标记失效链接
-          <span class="checker-bar__sep">·</span>
-          需要 <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener" class="checker-bar__link">Tampermonkey</a> 扩展
-        </template>
-      </span>
-      <button class="checker-bar__close" @click="dismissCheckerTip" aria-label="关闭">✕</button>
-    </div>
-
     <!-- 主内容区 -->
     <main class="main">
       <NuxtPage />
@@ -162,6 +143,9 @@ useHead({
   ],
 });
 
+// 全局 SEO 配置（TDK / OG / Twitter Card / JSON-LD）
+useSeoConfig();
+
 const { settings, loadSettings, saveSettings, resetToDefault } = useSettings();
 const { toast, showToast } = useToast();
 const { isDark, toggle: toggleDark, init: initDarkMode } = useDarkMode();
@@ -172,31 +156,18 @@ const showNavMenu = ref(false);
 
 // 导航链接
 const navLinks = [
-  { name: "首页", url: "https://shenzjd.com" },
-  { name: "Alist", url: "https://alist.shenzjd.com" },
-  { name: "网盘搜索", url: "https://panhub.shenzjd.com", isCurrent: true },
-  { name: "视频解析", url: "https://parse.shenzjd.com" },
-  { name: "热点聚合", url: "https://newshub.shenzjd.com" },
-  { name: "个人导航", url: "https://navhub.shenzjd.com" },
-  { name: "必应壁纸", url: "https://bing.shenzjd.com" },
+  { name: "首页", url: "https://www.bx9y.com.cn" },
+  { name: "导航站", url: "https://hao.bx9y.com.cn" },
+  { name: "网盘搜索", url: "", isCurrent: true },
+  { name: "工具网", url: "https://tool.bx9y.com.cn" },
 ];
 
 // 社交链接
 const socialLinks = [
   {
-    name: "Telegram",
-    url: "https://t.me/shenzjd_com",
-    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
-  },
-  {
     name: "GitHub",
-    url: "https://github.com/wu529778790",
+    url: "https://github.com/huanyu-a/panseek",
     icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>`,
-  },
-  {
-    name: "X",
-    url: "https://x.com/shenzujiudi",
-    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
   },
 ];
 const unlockSubmitting = ref(false);
@@ -238,60 +209,11 @@ watch(() => settings.value, (newVal, oldVal) => {
   }
 }, { deep: true });
 
-// 链接检测助手安装/升级提示条
-const CHECKER_TIP_KEY = "panseek:checker-tip-dismissed";
-const CHECKER_VER_KEY = "panseek:checker-last-version";
-const LATEST_CHECKER_VERSION = "2.0.0";
-const showCheckerTip = ref(false);
-const checkerTipType = ref<"install" | "upgrade">("install");
-const installedCheckerVersion = ref("");
-
-function checkCheckerTip() {
-  const win = window as any;
-  try {
-    // 已安装且版本匹配 → 无提示，记录版本
-    if (win.__panseek_linkCheckerReady && win.__panseek_linkCheckerVersion === LATEST_CHECKER_VERSION) {
-      localStorage.setItem(CHECKER_VER_KEY, LATEST_CHECKER_VERSION);
-      return;
-    }
-    // 已安装但版本过旧 → 升级提示（用户已关闭此版本则不再提示）
-    if (win.__panseek_linkCheckerReady && win.__panseek_linkCheckerVersion) {
-      const dismissedVer = localStorage.getItem(CHECKER_VER_KEY);
-      if (dismissedVer === win.__panseek_linkCheckerVersion) return;
-      installedCheckerVersion.value = win.__panseek_linkCheckerVersion;
-      checkerTipType.value = "upgrade";
-      showCheckerTip.value = true;
-      return;
-    }
-    // 未安装 → 安装提示（用户之前关闭过则不显示）
-    if (localStorage.getItem(CHECKER_TIP_KEY)) return;
-    checkerTipType.value = "install";
-    showCheckerTip.value = true;
-  } catch {
-    showCheckerTip.value = true;
-  }
-}
-function dismissCheckerTip() {
-  showCheckerTip.value = false;
-  try {
-    // 安装提示：记录关闭状态
-    if (checkerTipType.value === "install") {
-      localStorage.setItem(CHECKER_TIP_KEY, "1");
-    }
-    // 升级提示：记录已知版本（下次不再提示同一版本）
-    if (checkerTipType.value === "upgrade") {
-      localStorage.setItem(CHECKER_VER_KEY, installedCheckerVersion.value);
-    }
-  } catch {}
-}
-
 onMounted(() => {
   initDarkMode();
   loadSettings();
   auth.fetchStatus();
   document.addEventListener("click", onDocumentClick);
-  // 延迟 1 秒检测（等油猴脚本注入）
-  setTimeout(checkCheckerTip, 1000);
 });
 
 onBeforeUnmount(() => {
@@ -463,8 +385,7 @@ function onDocumentClick(e: MouseEvent) {
   display: flex;
   align-items: center;
   gap: 4px;
-  flex: 1;
-  justify-content: center;
+  margin-left: auto;
 }
 
 .nav-link {
@@ -679,65 +600,4 @@ function onDocumentClick(e: MouseEvent) {
   }
 }
 
-/* 链接检测助手通知条 */
-.checker-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 6px 16px;
-  background: linear-gradient(90deg, rgba(15, 118, 110, 0.1) 0%, rgba(245, 158, 11, 0.08) 100%);
-  border-bottom: 1px solid rgba(15, 118, 110, 0.12);
-  font-size: 13px;
-  color: var(--text-secondary, #4b5563);
-  line-height: 1.4;
-  animation: barSlideIn 0.3s ease;
-}
-.checker-bar__text {
-  text-align: center;
-}
-.checker-bar__link {
-  color: var(--primary, #0f766e);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.checker-bar__link:hover {
-  opacity: 0.8;
-}
-.checker-bar__sep {
-  margin: 0 4px;
-  opacity: 0.4;
-}
-.checker-bar__ver {
-  opacity: 0.6;
-  font-size: 0.9em;
-}
-.checker-bar__close {
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  font-size: 14px;
-  color: var(--text-tertiary, #9ca3af);
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-}
-.checker-bar__close:hover {
-  color: var(--text-primary, #1f2937);
-}
-@keyframes barSlideIn {
-  from { opacity: 0; transform: translateY(-100%); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (max-width: 640px) {
-  .checker-bar {
-    padding: 5px 12px;
-    font-size: 12px;
-  }
-  .checker-bar__sep {
-    display: none;
-  }
-}
 </style>

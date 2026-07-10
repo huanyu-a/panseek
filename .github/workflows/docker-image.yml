@@ -50,33 +50,21 @@ jobs:
           password: ${{ secrets.DEPLOY_PASSWORD }}
           script: |
             IMAGE="ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]'):latest"
-            CONTAINER="${{ github.event.repository.name }}"
-
-            echo "=== 登录 GHCR ==="
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            APP_DIR="/www/dk_project/dk_app/panseek"
 
             echo "=== 拉取最新镜像 ==="
-            sudo docker pull "$IMAGE"
+            docker pull "$IMAGE"
 
-            echo "=== 停止旧容器 ==="
-            sudo docker stop "$CONTAINER" || true
-            sudo docker rm "$CONTAINER" || true
+            echo "=== 重新标记为本地名称 ==="
+            docker tag "$IMAGE" panseek:latest
 
-            echo "=== 准备数据目录 ==="
-            DATA_DIR="/opt/1panel/apps/openresty/openresty/www/sites/panhub.shenzjd.com/index"
-            sudo mkdir -p "$DATA_DIR"
-            sudo chmod 777 "$DATA_DIR"
-
-            echo "=== 启动新容器 ==="
-            sudo docker run -d \
-              --name "$CONTAINER" \
-              --restart unless-stopped \
-              -p 5253:4000 \
-              -v /opt/1panel/apps/openresty/openresty/www/sites/panhub.shenzjd.com/index:/app/data \
-              "$IMAGE"
+            echo "=== 使用 docker-compose 重新部署 ==="
+            cd "$APP_DIR"
+            docker compose down
+            docker compose up -d
 
             echo "=== 清理旧镜像 ==="
-            sudo docker image prune -f
+            docker image prune -f
 
             echo "=== 部署完成 ==="
-            sudo docker ps | grep "$CONTAINER"
+            docker ps | grep panseek

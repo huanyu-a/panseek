@@ -24,8 +24,10 @@ export function useWxAuth() {
     if (typeof window === "undefined") return;
 
     // silent: true —— init 内的 autoCheck 不会弹窗，只静默验证 cookie
+    // apiBase: 后端认证服务地址（部署后自动获取公众号名称和二维码）
     WxAuth.init({
-      apiBase: "https://wx-auth.shenzjd.com",
+      apiBase: "https://wx-auth.bx9y.com.cn",
+      wechatName: "", // 留空，由后端 /api/sdk/config 自动返回
       silent: true,
       onVerified: (user: any) => {
         console.log("[wx-auth] 认证成功", user);

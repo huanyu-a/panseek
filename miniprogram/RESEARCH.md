@@ -8,7 +8,7 @@
 
 | 项 | 值 |
 |----|-----|
-| 后端入口 | `panhub.shenzjd.com` |
+| 后端入口 | `panseek.bx9y.com.cn` |
 | 后端框架 | Nuxt 4 + Nitro |
 | 后端部署 | Cloudflare Workers / Vercel / Docker |
 | Web 前端技术栈 | Vue 3 (Nuxt 4) + Vite |

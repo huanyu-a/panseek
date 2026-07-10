@@ -10,27 +10,13 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: "zh-CN" },
-title: "PanSeek · 全网最全的网盘搜索",
-    titleTemplate: "%s · PanSeek",
       meta: [
         {
           name: "viewport",
           content:
             "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
         },
-        {
-          name: "description",
-          content:
-            "PanSeek：聚合阿里云盘、夸克、百度网盘、115、迅雷等平台的全网最全网盘搜索工具，实时检索分享资源，免费、快速、无广告。",
-        },
-        {
-          name: "keywords",
-          content:
-            "网盘搜索, 阿里云盘, 夸克, 百度网盘, 115, 迅雷, 资源搜索, 盘搜, panseek, 网盘聚合搜索",
-        },
         { name: "theme-color", content: "#111111" },
-        { property: "og:type", content: "website" },
-        { property: "og:site_name", content: "PanSeek" },
       ],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
@@ -71,7 +57,7 @@ title: "PanSeek · 全网最全的网盘搜索",
     cacheTtlMinutes: channelsConfig.cacheTtlMinutes,
     public: {
       apiBase: "/api",
-      siteUrl: "https://panhub.shenzjd.com",
+      siteUrl: "https://panseek.bx9y.com.cn",
       // 向前端暴露默认频道清单
       tgDefaultChannels: channelsConfig.defaultChannels,
     },

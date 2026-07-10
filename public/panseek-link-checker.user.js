@@ -2,13 +2,13 @@
 // @name         PanSeek 链接检测助手
 // @name:zh      PanSeek 链接检测助手
 // @name:en      PanSeek Link Checker
-// @namespace    https://panhub.shenzjd.com
+// @namespace    https://panseek.bx9y.com.cn
 // @version      2.0.0
 // @description  自动检测 PanSeek 搜索结果中的失效网盘链接，标记已过期/已删除的资源，避免浪费时间点击
 // @description:en  Detect expired cloud storage links in PanSeek search results and mark them with a strikethrough
 // @author       shenzjd
-// @match        https://panhub.shenzjd.com/*
-// @match        http://panhub.shenzjd.com/*
+// @match        https://panseek.bx9y.com.cn/*
+// @match        http://panseek.bx9y.com.cn/*
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
 // @connect      pan.quark.cn
@@ -35,9 +35,9 @@
 // @compatible   firefox Greasemonkey 4+ / Tampermonkey
 // @compatible   edge Tampermonkey / Violentmonkey
 // @run-at       document-idle
-// @icon         https://panhub.shenzjd.com/favicon.ico
-// @downloadURL  https://panhub.shenzjd.com/panseek-link-checker.user.js
-// @updateURL    https://panhub.shenzjd.com/panseek-link-checker.user.js
+// @icon         https://panseek.bx9y.com.cn/favicon.ico
+// @downloadURL  https://panseek.bx9y.com.cn/panseek-link-checker.user.js
+// @updateURL    https://panseek.bx9y.com.cn/panseek-link-checker.user.js
 // ==/UserScript==
 
 (function () {

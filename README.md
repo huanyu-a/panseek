@@ -7,7 +7,7 @@
 [![Docker Hub](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker)](https://github.com/huanyu-a/panseek/pkgs/container/panseek)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**在线体验**：<https://panhub.shenzjd.com>
+**在线体验**：<https://panseek.bx9y.com.cn>
 
 ---
 
@@ -133,7 +133,7 @@ pnpm preview
 ### 链接检测助手
 
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展
-2. 访问 [链接检测助手安装页](https://panhub.shenzjd.com/panseek-link-checker.user.js)
+2. 访问 [链接检测助手安装页](https://panseek.bx9y.com.cn/panseek-link-checker.user.js)
 3. 点击安装，刷新 PanSeek 页面即可生效
 
 安装后搜索结果中的失效链接会自动标记 ~~删除线~~ + 红色"可能失效"标签。
@@ -284,4 +284,4 @@ graph TB
 
 **⭐ 如果觉得有用，请给个 Star 支持一下！**
 
-**在线体验**：<https://panhub.shenzjd.com>
+**在线体验**：<https://panseek.bx9y.com.cn>

@@ -150,7 +150,6 @@ import { PLATFORM_INFO } from "~/config/plugins";
 
 const config = useRuntimeConfig();
 const apiBase = (config.public?.apiBase as string) || "/api";
-const siteUrl = (config.public?.siteUrl as string) || "";
 const route = useRoute();
 const router = useRouter();
 
@@ -172,50 +171,8 @@ onMounted(async () => {
   fetchHotTerms();
 });
 
-// SEO 元数据
-useSeoMeta({
-  title: "PanSeek - 全网最全的网盘搜索",
-  description:
-    "聚合阿里云盘、夸克、百度网盘、115、迅雷等平台，实时检索各类分享链接与资源，免费、快速、无广告。",
-  ogTitle: "PanSeek - 全网最全的网盘搜索",
-  ogDescription:
-    "聚合阿里云盘、夸克、百度网盘、115、迅雷等平台，实时检索各类分享链接与资源，免费、快速、无广告。",
-  ogType: "website",
-  ogSiteName: "PanSeek",
-  ogImage: siteUrl ? `${siteUrl}/og.svg` : "/og.svg",
-  twitterCard: "summary_large_image",
-  twitterTitle: "PanSeek - 全网最全的网盘搜索",
-  twitterDescription:
-    "聚合阿里云盘、夸克、百度网盘、115、迅雷等平台，实时检索各类分享链接与资源，免费、快速、无广告。",
-  twitterImage: siteUrl ? `${siteUrl}/og.svg` : "/og.svg",
-});
-
-useHead({
-  link: [{ rel: "canonical", href: siteUrl ? `${siteUrl}/` : "/" }],
-  meta: [
-    {
-      name: "keywords",
-      content:
-        "网盘搜索, 阿里云盘搜索, 夸克网盘搜索, 百度网盘搜索, 115 网盘, 迅雷云盘, 资源搜索, 盘搜, PanSeek",
-    },
-  ],
-  script: [
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        name: "PanSeek",
-        url: siteUrl || "",
-        potentialAction: {
-          "@type": "SearchAction",
-          target: (siteUrl || "") + "/?q={search_term_string}",
-          "query-input": "required name=search_term_string",
-        },
-      }),
-    },
-  ],
-});
+// SEO 元数据已统一由 composables/useSeoConfig.ts 在 app.vue 中全局注入
+// 如需页面级覆盖，可在此处使用 useSeoMeta / useHead
 
 // 搜索相关状态
 const kw = ref("");

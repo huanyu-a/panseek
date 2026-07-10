@@ -206,7 +206,7 @@ export interface SearchResponse { ... }
 **文件变更**：修改 `vitest.config.ts`
 ```typescript
 // 改前
-alias: { "#internal": "/Users/mac/github/panhub.shenzjd.com/.nuxt" }
+alias: { "#internal": "/Users/mac/github/panseek.bx9y.com.cn/.nuxt" }
 // 改后
 alias: { "#internal": path.resolve(__dirname, ".nuxt") }
 ```

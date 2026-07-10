@@ -11,7 +11,7 @@ import { registerAllPlugins } from "../plugins/registerAllPlugins";
 //   thepiratebay - mirror URL expired + anti-scrape
 //   panta      - overseas IP unreachable (likely blocked)
 //   xuexizhinan - small site offline
-// See: data/panhub.shenzjd.com-20260706090537.log analysis
+// See: data/panseek.bx9y.com.cn-20260706090537.log analysis
 
 const SERVICE_CONTEXT_KEY = "__panseek_search_service__";
 
