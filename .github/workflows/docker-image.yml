@@ -1,5 +1,8 @@
 name: Build and Push Docker Image
 
+# 仅构建并推送镜像到 GHCR（用于备份/版本管理）
+# 实际部署使用本地构建 + SCP 传输方式，详见 deploy/ 目录
+
 on:
   push:
     branches: [main]
@@ -36,35 +39,3 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_PASSWORD }}
-          script: |
-            IMAGE="ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]'):latest"
-            APP_DIR="/www/dk_project/dk_app/panseek"
-
-            echo "=== 拉取最新镜像 ==="
-            docker pull "$IMAGE"
-
-            echo "=== 重新标记为本地名称 ==="
-            docker tag "$IMAGE" panseek:latest
-
-            echo "=== 使用 docker-compose 重新部署 ==="
-            cd "$APP_DIR"
-            docker compose down
-            docker compose up -d
-
-            echo "=== 清理旧镜像 ==="
-            docker image prune -f
-
-            echo "=== 部署完成 ==="
-            docker ps | grep panseek
