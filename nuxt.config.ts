@@ -60,6 +60,8 @@ export default defineNuxtConfig({
       siteUrl: "https://panseek.bx9y.com.cn",
       // 向前端暴露默认频道清单
       tgDefaultChannels: channelsConfig.defaultChannels,
+      // 百度统计 ID（环境变量注入，不提交到仓库）
+      baiduTongjiId: process.env.NUXT_PUBLIC_BAIDU_TONGJI_ID || "",
     },
   },
 });
