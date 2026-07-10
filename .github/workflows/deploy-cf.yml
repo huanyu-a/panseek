@@ -1,0 +1,48 @@
+name: Deploy to Cloudflare Workers
+
+# 推送到 main 分支时自动部署到 Cloudflare Workers
+# 同时支持手动触发 (workflow_dispatch)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同时只跑一个部署，避免并发冲突
+concurrency:
+  group: deploy-cf-workers
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (cloudflare-module preset)
+        run: npm run build
+        env:
+          # cloudflare-module 预设生成 Workers 兼容的 .output
+          NITRO_PRESET: cloudflare-module
+          # 百度统计 ID（运行时注入，不在代码中硬编码）
+          NUXT_PUBLIC_BAIDU_TONGJI_ID: ${{ secrets.NUXT_PUBLIC_BAIDU_TONGJI_ID }}
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # wrangler.toml 已包含 account_id、routes、workers_dev、assets
+          # 无需额外 command，默认执行 wrangler deploy
+          wranglerVersion: "4.110.0"

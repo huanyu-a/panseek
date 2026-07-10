@@ -2,9 +2,16 @@ name = "panseek-bx9y-com-cn"
 main = ".output/server/index.mjs"
 compatibility_date = "2025-07-15"
 compatibility_flags = ["nodejs_compat"]
+account_id = "4b89ec13f36690f7c40ac23ec3b41040"
+
+workers_dev = true
 
 [assets]
 directory = ".output/public"
 binding = "ASSETS"
+
+[[routes]]
+pattern = "panseek.bx9y.com.cn/*"
+zone_id = "66ac24ea7c2dd3f072a9c07a4e683c7d"
 
 

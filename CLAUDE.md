@@ -163,7 +163,7 @@ Sets `Cache-Control: no-cache, no-store, must-revalidate` on all `/api/*` respon
 
 ## Analytics
 
-Baidu Tongji (百度统计) via client-only plugin `plugins/baidu-tongji.client.ts`. ID is stored in the `NUXT_PUBLIC_BAIDU_TONGJI_ID` env var and exposed through `runtimeConfig.public.baiduTongjiId` — never hardcoded in source. The plugin applies layered anti-scraping: env-var ID (not in repo), runtime URL assembly (no `hm.js?<FULL_ID>` literal in source), hostname whitelist (`panseek.bx9y.com.cn` only), and deferred injection via `requestIdleCallback`. Baidu's own server-side domain whitelist is a second layer of protection. Does not track SPA route changes — standard page-view stats only. Empty ID (default) = analytics disabled.
+Baidu Tongji (百度统计) via client-only plugin `plugins/baidu-tongji.client.ts`. ID is stored in the `NUXT_PUBLIC_BAIDU_TONGJI_ID` env var and exposed through `runtimeConfig.public.baiduTongjiId` — never hardcoded in source. The plugin applies layered anti-scraping: env-var ID (not in repo), runtime URL assembly (no `hm.js?<FULL_ID>` literal in source), hostname whitelist (`panseek.bx9y.com.cn` only), and deferred injection via `requestIdleCallback`. Baidu's own server-side domain whitelist is a second layer of protection. Does not track SPA route changes — standard page-view stats only. Empty ID (default) = analytics disabled. Reusable setup notes for other Nuxt projects are in `~/.claude/projects/.../reference/baidu-tongji-nuxt.md`.
 
 ## Environment Variables
 
