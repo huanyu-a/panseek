@@ -129,7 +129,19 @@
       "Bash(curl -s -m 10 \"https://tv.yydsys.top/index.php/vod/search/wd/test.html\" -H \"user-agent: Mozilla/5.0\" -H \"referer: https://tv.yydsys.top/\")",
       "Bash(curl -s -m 10 \"https://xuexizhinan.com/?post_type=book&s=test\" -H \"user-agent: Mozilla/5.0\")",
       "Bash(curl -s -m 10 \"https://www.91panta.cn/search?keyword=test\" -H \"user-agent: Mozilla/5.0\" -H \"referer: https://www.91panta.cn/index\")",
-      "Bash(curl -s -m 10 \"https://tpirbay.xyz/search/test/1/99/0\" -H \"user-agent: Mozilla/5.0\")"
+      "Bash(curl -s -m 10 \"https://tpirbay.xyz/search/test/1/99/0\" -H \"user-agent: Mozilla/5.0\")",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__search_files",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(\"C:/Windows/System32/OpenSSH/ssh-keygen.exe\" -y -f \"D:/soft/152.136.49.237_id_ed25519\")",
+      "Bash(docker version *)",
+      "Bash(NITRO_PRESET=cloudflare-module npm run build)",
+      "mcp__fetch__fetch",
+      "Bash(curl -s \"https://panseek-bx9y-com-cn.792773403.workers.dev/api/health\")",
+      "Bash(curl -s \"https://panseek-bx9y-com-cn.792773403.workers.dev/api/search?kw=%E6%96%91%E9%A9%AC%E8%8B%B1%E8%AF%AD&res=merged_by_type\")",
+      "Bash(curl -s \"https://panseek-bx9y-com-cn.792773403.workers.dev/\")",
+      "Bash(C:/Windows/System32/OpenSSH/ssh.exe *)"
     ]
   }
 }
