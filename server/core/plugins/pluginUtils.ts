@@ -75,35 +75,6 @@ export function extractLinksFromHTML(html: string, keyword?: string): Link[] {
 }
 
 /** 通用搜索页面抓取器 — 抓取 HTML，提取链接 */
-export async function fetchAndExtractLinks(
-  url: string,
-  options?: {
-    headers?: Record<string, string>;
-    timeout?: number;
-  }
-): Promise<{ html: string; links: Link[] }> {
-  try {
-    const html = await fetchWithRetry<string>(url, {
-      headers: {
-        "user-agent": UA,
-        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-        ...(options?.headers || {}),
-      },
-    }, {
-      maxRetries: 1,
-      timeout: options?.timeout || 8000,
-      logWarnings: false,
-      responseType: "text",
-    });
-
-    const links = extractLinksFromHTML(html);
-    return { html, links };
-  } catch {
-    return { html: "", links: [] };
-  }
-}
-
 /**
  * 抓取搜索结果页，提取详情页链接，再从详情页提取网盘链接
  * 这是大部分 pansou 插件的核心模式
@@ -459,55 +430,6 @@ export function filterByKeyword(
     const lowerContent = (r.content || "").toLowerCase();
     return kws.every((kw) => lowerTitle.includes(kw) || lowerContent.includes(kw));
   });
-}
-
-/** 从 URL 中提取密码参数 */
-export function extractPasswordFromURL(url: string): string {
-  const params = ["pwd=", "password=", "passcode=", "code="];
-  for (const param of params) {
-    const pos = url.indexOf(param);
-    if (pos !== -1) {
-      const start = pos + param.length;
-      let end = url.length;
-      for (let i = start; i < url.length; i++) {
-        if (url[i] === "&" || url[i] === "#") {
-          end = i;
-          break;
-        }
-      }
-      if (start < end) return url.slice(start, end);
-    }
-  }
-  return "";
-}
-
-/** 从文本中提取第一个 URL */
-export function extractURLFromText(text: string): string {
-  const prefixes = ["http://", "https://"];
-  let start = -1;
-  for (const prefix of prefixes) {
-    const pos = text.indexOf(prefix);
-    if (pos !== -1) {
-      start = pos;
-      break;
-    }
-  }
-  if (start === -1) return "";
-  let end = text.length;
-  const endChars = [" ", "\t", "\n", '"', "'", "<", ">", ")", "]", "}", ",", ";"];
-  for (const char of endChars) {
-    const pos = text.indexOf(char, start);
-    if (pos !== -1 && pos < end) end = pos;
-  }
-  return text.slice(start, end);
-}
-
-/** 解析时间字符串为 ISO string */
-export function parseDateTime(datetime: string): string {
-  if (!datetime) return new Date().toISOString();
-  const dt = new Date(datetime);
-  if (!isNaN(dt.getTime())) return dt.toISOString();
-  return new Date().toISOString();
 }
 
 /** 生成唯一 ID */
