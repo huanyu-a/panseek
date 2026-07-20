@@ -39,6 +39,8 @@ jobs:
           NITRO_PRESET: cloudflare-module
           # 百度统计 ID（运行时注入，不在代码中硬编码）
           NUXT_PUBLIC_BAIDU_TONGJI_ID: ${{ secrets.NUXT_PUBLIC_BAIDU_TONGJI_ID }}
+          # 搜索密码门禁（空值 = 跳过验证）
+          SEARCH_PASSWORD: ${{ secrets.SEARCH_PASSWORD }}
 
       - name: Install Wrangler
         run: npm install wrangler@4.110.0 --no-save --no-audit --no-fund
